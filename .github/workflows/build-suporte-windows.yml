@@ -22,9 +22,9 @@ on:
         type: string
         default: "ijUj5Cq3LrVdV8Q3tgeByteOmf4VrhQSktdW1Bep8dc="
       product_name:
-        description: "Nome de exibição do produto."
+        description: "Nome do produto (UI + instalador). SEM espaço — deve casar com o instalador."
         type: string
-        default: "Suporte Hiperfarma"
+        default: "SuporteHiperfarma"
 
 env:
   SCITER_RUST_VERSION: "1.75"
@@ -36,7 +36,7 @@ env:
   UPLOAD_ARTIFACT: "true"
   SIGN_BASE_URL: "-2" # '-2' = pular etapas de assinatura
   VERSION: "1.4.7" # versão do app (Cargo.toml); usada como product version do MSI (precisa ser semver válido)
-  APP_EXE_NAME: "Suporte Hiperfarma" # DEVE ser igual ao APP_NAME (UI), senão is_installed() falha e o banner do UAC nunca some
+  APP_EXE_NAME: "SuporteHiperfarma" # SEM espaço: o WiX/preprocess quebra com espaço. DEVE = APP_NAME (UI) senão is_installed() falha e o banner do UAC nunca some.
   MANUFACTURER: "Hiperfarma"
 
 jobs:

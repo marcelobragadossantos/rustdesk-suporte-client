@@ -15,7 +15,7 @@ set -euo pipefail
 
 RENDEZVOUS_SERVER="${RENDEZVOUS_SERVER:-10.160.200.183}"
 RS_PUB_KEY="${RS_PUB_KEY:-ijUj5Cq3LrVdV8Q3tgeByteOmf4VrhQSktdW1Bep8dc=}"
-APP_PRODUCT_NAME="${APP_PRODUCT_NAME:-Suporte Hiperfarma}"
+APP_PRODUCT_NAME="${APP_PRODUCT_NAME:-SuporteHiperfarma}"
 
 CFG="libs/hbb_common/src/config.rs"
 [ -f "$CFG" ] || { echo "ERRO: $CFG não encontrado (checkout com submódulos?)"; exit 1; }

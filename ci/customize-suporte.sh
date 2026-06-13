@@ -32,6 +32,12 @@ sed -i -E "s|pub const RS_PUB_KEY: &str = \"[^\"]*\";|pub const RS_PUB_KEY: \&st
 echo ">> Conferência das constantes resultantes:"
 grep -E 'pub const (RENDEZVOUS_SERVERS|RS_PUB_KEY)' "$CFG"
 
+# Nome de exibição do app (UI/título de janela). APP_NAME é static no config.rs;
+# só é sobrescrito em runtime por custom client config assinado — então editar aqui pega.
+echo ">> Nome de exibição (APP_NAME) = $APP_PRODUCT_NAME"
+sed -i -E "s|(APP_NAME: RwLock<String> = RwLock::new\\()\"RustDesk\"|\\1\"${APP_PRODUCT_NAME}\"|" "$CFG"
+grep -E 'APP_NAME: RwLock' "$CFG" || true
+
 # --- Branding de cores (identidade Hiperfarma) ----------------------------
 # Paleta da marca (design-system): primary-600 #dc2626 (CTA/header), primary-500 #ef4444.
 # RustDesk usa azul #0071FF (accent) e #2C8CFF (button) em flutter/lib/common.dart.

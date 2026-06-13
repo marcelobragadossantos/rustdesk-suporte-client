@@ -36,6 +36,8 @@ env:
   UPLOAD_ARTIFACT: "true"
   SIGN_BASE_URL: "-2" # '-2' = pular etapas de assinatura
   VERSION: "1.4.7" # versão do app (Cargo.toml); usada como product version do MSI (precisa ser semver válido)
+  APP_EXE_NAME: "SuporteHiperfarma" # nome do exe/instalador/pasta (sem espaço, p/ segurança do empacotador)
+  MANUFACTURER: "Hiperfarma"
 
 jobs:
   generate-bridge:
@@ -147,6 +149,8 @@ jobs:
           Remove-Item -Path usbmmidd_v2\Win32 -Recurse
           Remove-Item -Path "usbmmidd_v2\deviceinstaller64.exe", "usbmmidd_v2\deviceinstaller.exe", "usbmmidd_v2\usbmmidd.bat"
           mv -Force .\usbmmidd_v2 ./rustdesk
+          # Renomeia o exe principal p/ o nome do app (o MSI casa o componente por {app-name}.exe)
+          mv -Force "./rustdesk/rustdesk.exe" "./rustdesk/${{ env.APP_EXE_NAME }}.exe"
 
       - name: find Runner.res
         continue-on-error: true
@@ -167,7 +171,7 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
+          python3 ./generate.py -f ../../rustdesk/ -o . -e "../../rustdesk/${{ env.APP_EXE_NAME }}.exe"
           popd
           mkdir -p ./SignOutput
           mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/SuporteHiperfarma-${{ env.VERSION }}-x86_64.exe
@@ -178,7 +182,7 @@ jobs:
       - name: Build msi
         run: |
           pushd ./res/msi
-          python preprocess.py --arp -d ../../rustdesk
+          python preprocess.py --arp --app-name "${{ env.APP_EXE_NAME }}" --manufacturer "${{ env.MANUFACTURER }}" -d ../../rustdesk
           nuget restore msi.sln
           # WiX 4 é SDK-style (PackageReference) → precisa de -Restore no msbuild,
           # senão falta o project.assets.json do Package.wixproj.

@@ -32,6 +32,26 @@ sed -i -E "s|pub const RS_PUB_KEY: &str = \"[^\"]*\";|pub const RS_PUB_KEY: \&st
 echo ">> Conferência das constantes resultantes:"
 grep -E 'pub const (RENDEZVOUS_SERVERS|RS_PUB_KEY)' "$CFG"
 
+# --- Branding de cores (identidade Hiperfarma) ----------------------------
+# Paleta da marca (design-system): primary-600 #dc2626 (CTA/header), primary-500 #ef4444.
+# RustDesk usa azul #0071FF (accent) e #2C8CFF (button) em flutter/lib/common.dart.
+BRAND_ACCENT="${BRAND_ACCENT:-DC2626}"   # primary-600 — accent principal
+BRAND_BUTTON="${BRAND_BUTTON:-EF4444}"   # primary-500 — botão (tom mais claro)
+COMMON="flutter/lib/common.dart"
+if [ -f "$COMMON" ]; then
+  echo ">> Aplicando cores da marca: accent=#$BRAND_ACCENT button=#$BRAND_BUTTON"
+  # accent / accent50 / accent80 (preserva o alfa: FF, 77, AA)
+  sed -i -E "s|0xFF0071FF|0xFF${BRAND_ACCENT}|g; s|0x770071FF|0x77${BRAND_ACCENT}|g; s|0xAA0071FF|0xAA${BRAND_ACCENT}|g" "$COMMON"
+  # button
+  sed -i -E "s|0xFF2C8CFF|0xFF${BRAND_BUTTON}|g" "$COMMON"
+  # ColorScheme primary dos temas (claro/escuro): azul -> vermelho
+  sed -i -E "s|primary: Colors\.blue|primary: Colors.red|g" "$COMMON"
+  echo ">> Conferência das cores resultantes:"
+  grep -nE "static const Color (accent|button)" "$COMMON" || true
+else
+  echo ">> AVISO: $COMMON não encontrado — pulando cores."
+fi
+
 # --- Branding leve do nome de produto (Windows) ---------------------------
 # O nome de exibição/empacotamento. Branding pesado (ícone/logo) é binário e
 # entra como assets versionados no fork (ver CUSTOMIZATION-HIPERFARMA.md).

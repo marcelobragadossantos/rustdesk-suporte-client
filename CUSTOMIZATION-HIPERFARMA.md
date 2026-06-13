@@ -45,6 +45,7 @@ strings "RustDesk"→"Suporte Hiperfarma" na UI) envolve assets binários e edi�
 
 - [x] Embedding de servidor + chave (config injection no CI)
 - [x] Workflow de build Windows (estrutura do upstream + customização)
-- [ ] **Primeiro build verde** (validação do pipeline — pode exigir ajuste de versões)
-- [ ] Branding visual (ícone/logo/strings)
+- [x] **Primeiro build verde** (run 27473210895 → .msi + .exe)
+- [x] Cores da marca (accent `#dc2626`, button `#ef4444`, temas em vermelho)
+- [ ] Branding visual restante (ícone/logo + strings "RustDesk"→"Suporte Hiperfarma")
 - [ ] Assinatura de código (cert) + release

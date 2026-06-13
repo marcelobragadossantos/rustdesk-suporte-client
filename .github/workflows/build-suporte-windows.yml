@@ -36,7 +36,7 @@ env:
   UPLOAD_ARTIFACT: "true"
   SIGN_BASE_URL: "-2" # '-2' = pular etapas de assinatura
   VERSION: "1.4.7" # versão do app (Cargo.toml); usada como product version do MSI (precisa ser semver válido)
-  APP_EXE_NAME: "SuporteHiperfarma" # nome do exe/instalador/pasta (sem espaço, p/ segurança do empacotador)
+  APP_EXE_NAME: "Suporte Hiperfarma" # DEVE ser igual ao APP_NAME (UI), senão is_installed() falha e o banner do UAC nunca some
   MANUFACTURER: "Hiperfarma"
 
 jobs:

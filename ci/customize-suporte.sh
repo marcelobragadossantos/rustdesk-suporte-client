@@ -38,6 +38,15 @@ echo ">> Nome de exibição (APP_NAME) = $APP_PRODUCT_NAME"
 sed -i -E "s|(APP_NAME: RwLock<String> = RwLock::new\\()\"RustDesk\"|\\1\"${APP_PRODUCT_NAME}\"|" "$CFG"
 grep -E 'APP_NAME: RwLock' "$CFG" || true
 
+# --- Trava da tela de configuração (hardening de fleet) -------------------
+# HARD_SETTINGS["disable-settings"]=Y  -> desabilita o menu de Ajustes inteiro.
+# BUILTIN_SETTINGS["hide-server-settings"]=Y -> esconde ID/Relay/Key (servidor).
+# Assim o usuário da loja não vê nem altera servidor/chave; só o suporte controla.
+echo ">> Travando a tela de configuração (disable-settings + hide-server-settings)"
+sed -i -E 's@(pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> =) Default::default\(\);@\1 RwLock::new(HashMap::from([("disable-settings".to_string(), "Y".to_string())]));@' "$CFG"
+sed -i -E 's@(pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> =) Default::default\(\);@\1 RwLock::new(HashMap::from([("hide-server-settings".to_string(), "Y".to_string())]));@' "$CFG"
+grep -E '(HARD_SETTINGS|BUILTIN_SETTINGS): RwLock<HashMap' "$CFG" || true
+
 # --- Branding de cores (identidade Hiperfarma) ----------------------------
 # Paleta da marca (design-system): primary-600 #dc2626 (CTA/header), primary-500 #ef4444.
 # RustDesk usa azul #0071FF (accent) e #2C8CFF (button) em flutter/lib/common.dart.

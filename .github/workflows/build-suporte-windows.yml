@@ -180,12 +180,17 @@ jobs:
           pushd ./res/msi
           python preprocess.py --arp -d ../../rustdesk
           nuget restore msi.sln
-          msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10
+          # WiX 4 é SDK-style (PackageReference) → precisa de -Restore no msbuild,
+          # senão falta o project.assets.json do Package.wixproj.
+          msbuild msi.sln -Restore -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10
           mv ./Package/bin/x64/Release/en-us/Package.msi ../../SignOutput/SuporteHiperfarma-${{ env.VERSION }}-x86_64.msi
           sha256sum ../../SignOutput/SuporteHiperfarma-*.msi
 
       - name: Upload branded artifacts
+        # always(): mesmo se o MSI falhar, sobe o .exe portável já gerado.
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: SuporteHiperfarma-windows-x86_64
           path: ./SignOutput
+          if-no-files-found: warn

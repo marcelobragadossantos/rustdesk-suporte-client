@@ -32,6 +32,15 @@ sed -i -E "s|pub const RS_PUB_KEY: &str = \"[^\"]*\";|pub const RS_PUB_KEY: \&st
 echo ">> Conferência das constantes resultantes:"
 grep -E 'pub const (RENDEZVOUS_SERVERS|RS_PUB_KEY)' "$CFG"
 
+# --- API server (console rustdesk-api) FORÇADO ---------------------------
+# O api-server NÃO deriva do servidor default embutido (só do rendezvous CUSTOM,
+# que ninguém seta). Sem isso o cliente reporta pro admin.rustdesk.com público e a
+# máquina NÃO aparece no nosso console. Forçamos via OVERWRITE_SETTINGS["api-server"].
+API_SERVER="${API_SERVER:-http://${RENDEZVOUS_SERVER}:21114}"
+echo ">> Forçando api-server (console) = $API_SERVER"
+sed -i -E "s@(pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> =) Default::default\(\);@\1 RwLock::new(HashMap::from([(\"api-server\".to_string(), \"${API_SERVER}\".to_string())]));@" "$CFG"
+grep -E 'OVERWRITE_SETTINGS: RwLock<HashMap' "$CFG" || true
+
 # Nome de exibição do app (UI/título de janela). APP_NAME é static no config.rs;
 # só é sobrescrito em runtime por custom client config assinado — então editar aqui pega.
 echo ">> Nome de exibição (APP_NAME) = $APP_PRODUCT_NAME"

@@ -51,4 +51,22 @@ ico("flutter/windows/runner/resources/app_icon.ico", ICO_SIZES)
 ico("res/icon.ico", ICO_SIZES)
 ico("res/tray-icon.ico", [16, 24, 32, 48, 64])
 
+# Logos DENTRO do app Flutter (janela/home/barra de título).
+# loadLogo() -> assets/logo.png ; loadIcon() -> assets/icon.png (fallback assets/icon.svg).
+# Esses PNGs NÃO existem no upstream (cai no icon.svg azul do RustDesk) -> criamos vermelhos.
+png("flutter/assets/icon.png", 512)
+png("flutter/assets/logo.png", 512)
+
+# icon.svg de fallback: SVG que embute o PNG vermelho (garante nada de azul mesmo no fallback).
+import base64, io
+buf = io.BytesIO()
+base.resize((256, 256), Image.LANCZOS).save(buf, format="PNG")
+b64 = base64.b64encode(buf.getvalue()).decode()
+svg = ('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
+       'viewBox="0 0 256 256"><image width="256" height="256" '
+       f'xlink:href="data:image/png;base64,{b64}"/></svg>')
+with open(os.path.join(ROOT, "flutter/assets/icon.svg"), "w", encoding="utf-8") as f:
+    f.write(svg)
+print("svg  flutter/assets/icon.svg (embedded png)")
+
 print("OK: assets de marca gerados.")

@@ -1,9 +1,7 @@
 name: Flutter Nightly Build
 
 on:
-  schedule:
-    # schedule build every night
-    - cron: "0 0 * * *"
+  # nightly agendado desativado em 2026-06-21 (usamos build-suporte-windows.yml); manter apenas dispatch manual
   workflow_dispatch:
 
 jobs:
